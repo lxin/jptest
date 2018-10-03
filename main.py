@@ -56,6 +56,9 @@ long_limit_mode=2
 
 extmap_index=-1
 
+heart_scale=[(0,    0.7 + 0),(0.15, 0.7 + 0.18), (0.30, 0.7 + 0.15), (0.45, 0.7 + 0),    (0.60, 0.7 + 0.15), (0.75, 0.7 + 0.18),
+             (0.90, 0.7 + 0),(0.15, 0.7 - 0.20), (0.30, 0.7 - 0.40), (0.45, 0.7 - 0.60), (0.60, 0.7 - 0.40), (0.75, 0.7 - 0.20)]
+
 help_info=\
 """
 Help:
@@ -158,6 +161,7 @@ class JPTest(App, Widget):
         for i in range(self.get_conf_flakes()):
             bullet = self.create_bullet()
             button = self.create_flake(i, bullet)
+            button.index = i
             self.layout.add_widget(bullet)
             self.layout.add_widget(button)
 
@@ -176,6 +180,7 @@ class JPTest(App, Widget):
         self.jp_map=copy.deepcopy(newmap)
 
         self.no_keys=0
+        self.heart_bullet = 0
         if not instance:
             return True
 
@@ -251,12 +256,24 @@ class JPTest(App, Widget):
             or ( self.get_conf_mode() == time_limit_mode and time_gap >= self.get_stat_ctime()):
             self.set_stat_ctime(time_gap)
         else:
-            if self.get_conf_char() == 2 and self.no_keys < self.get_conf_flakes():  # important to author
-                for b in self.buttons:
-                        if self.get_conf_delay():
-                            b.bullet.background_color = b.background_color
-                            b.bullet.text = "♥"
-                            self.animate_bullet(b.bullet)
+            if self.get_conf_char() == 2:  # important to author
+                if self.no_keys < self.get_conf_flakes():
+                    for b in self.buttons:
+                            if self.get_conf_delay():
+                                b.bullet.background_color = b.background_color
+                                b.bullet.text = "♥"
+                                self.animate_bullet(b.bullet)
+                else:
+                    for b in self.buttons:
+                            if b.opacity == 0:
+                                return True
+                    if self.heart_bullet or self.get_conf_flakes() != 12:
+                        return True
+                    self.heart_bullet = 1
+                    for b in self.buttons:
+                        b.bullet.background_color = b.background_color
+                        b.bullet.text = "♥"
+                        self.animate_heart_bullet(b.bullet)
 
             return True
 
@@ -268,6 +285,26 @@ class JPTest(App, Widget):
                            content = box,  size_hint=size_hint, size=(self.win_width / 3, self.win_height / 3))
         self.popup.open()
         self.sounds[2].stop()
+
+    def animate_heart_bullet_complete(self, animation, instance): # important to author
+        if self.heart_bullet > 24:
+             self.animate_bullet(instance)
+             return True
+        self.heart_bullet += 1
+        self.animate_heart_bullet(instance)
+
+    def animate_heart_bullet(self, instance): # important to author
+        pos_scale = heart_scale[instance.button.index]
+        pos = (pos_scale[0] * self.win_height/2, pos_scale[1] * self.win_height/2)
+        animation =  Animation(pos=instance.pos)
+        animation += Animation(pos=pos, duration=1.5, t="out_bounce")
+
+        pos_offset = heart_scale[6][0] * self.win_height
+        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
+               pos_scale[1] * self.win_height)
+        animation += Animation(pos=pos, duration=1, t="out_elastic")
+        animation.bind(on_complete=self.animate_heart_bullet_complete)
+        animation.start(instance)
 
     def animate_flake_duration(self):
         if self.get_conf_mode() == long_limit_mode:
@@ -355,7 +392,7 @@ class JPTest(App, Widget):
         if not keys:
             if self.get_conf_char() == 2:  # important to author
                 value = "❤"
-                key=random.choice([":D", ";)", ":P", "O.o", "\o/"])
+                key=random.choice([":D", ";)", ":P", "O.o", "\o/", "^0^", ">\"<", ":)", "<3"])
             else:
                 value = "DONE"
                 key= "NULL"

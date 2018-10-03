@@ -6,7 +6,7 @@ Help:
    * help: it comes to this page
    * exit: close the window
    * setup: you would be able to see a textinput box:
-   
+
          Time | Alphabet | Mode | Cheat | Speed | FontSize | Delay | Flakes:
            60,       0,      0,      1,      1,      30,       5,       6
 
@@ -29,5 +29,5 @@ Help:
      * on-bullet: it comes to this page, as help cmd does
 
 Copyright:
-1. Powered By : Xin Long <lucein.xin@gmail.com>  
+1. Powered By : Xin Long <lucein.xin@gmail.com>
 2. Source Code : https://github.com/lxin/jptest
