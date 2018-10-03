@@ -2,7 +2,7 @@
 A kivy example for Japanese alphabet
 
 Help:
-1. system commands: help, exit, setup, ...
+1. system commands: help, exit, setup, ... (you can type once the app starts)
    * help: it comes to this page
    * exit: close the window
    * setup: you would be able to see a textinput box:
@@ -13,19 +13,19 @@ Help:
        - Time: 1-n => the certain time, see Mode 0
        - Alphabet:  0 => hiragana   1 => katakana   2 => kanji
                    -1 => load the user-defined map from ~/jp_ext.map
-       - Mode:  0 => count the character numbers in a certain time
+       - Mode:  0 => count the character number in a certain time
                 1 => count the time after you finish all characters
-                2 => shot all before any flakes touch the buttom
+                2 => shoot all before any flakes touch the bottom
        - Cheat: 0 => disable the prompt by clicking the flakes
                 1 => enable the prompt by clicking the flakes
        - Speed: 1-n => flakes fall faster as the value gets bigger
-       - FontSize: 1-n => the FontSize on each flake
-       - Delay: 0 => no animation delay, shoot extremly fast
+       - FontSize: 1-n => the font size on each flake
+       - Delay: 0 => no animation delay, shoot extremely fast
                 1-n => the animation duration for shooting
-       - Flakes:1-n => the numbers of the Flakes
+       - Flakes:1-n => the number of the Flakes
     * ...: others would be matched with the flakes
 2. clicks: on-flakes, on-bullet
-     * on-flakes: show the prompt if Cheat is enable
+     * on-flakes: show the prompt if Cheat is enabled
      * on-bullet: it comes to this page, as help cmd does
 
 Copyright:

@@ -56,13 +56,15 @@ long_limit_mode=2
 
 extmap_index=-1
 
-heart_scale=[(0,    0.7 + 0),(0.15, 0.7 + 0.18), (0.30, 0.7 + 0.15), (0.45, 0.7 + 0),    (0.60, 0.7 + 0.15), (0.75, 0.7 + 0.18),
-             (0.90, 0.7 + 0),(0.15, 0.7 - 0.20), (0.30, 0.7 - 0.40), (0.45, 0.7 - 0.60), (0.60, 0.7 - 0.40), (0.75, 0.7 - 0.20)]
+heart_scale=[(0,    0.7 + 0),(0.15, 0.7 + 0.18), (0.30, 0.7 + 0.15),
+             (0.45, 0.7 + 0),(0.60, 0.7 + 0.15), (0.75, 0.7 + 0.18),
+             (0.90, 0.7 + 0),(0.60, 0.7 - 0.40), (0.75, 0.7 - 0.20),
+             (0.45, 0.7-0.6),(0.30, 0.7 - 0.40), (0.15, 0.7 - 0.20)]
 
 help_info=\
 """
 Help:
-1. system commands: help, exit, setup, ...
+1. system commands: help, exit, setup, ... (you can type once the app starts)
    * help: it comes to this page
    * exit: close the window
    * setup: you would be able to see a textinput box:
@@ -71,19 +73,19 @@ Help:
        - Time: 1-n => the certain time, see Mode 0
        - Alphabet:  0 => hiragana   1 => katakana   2 => kanji
                    -1 => load the user-defined map from """+extmap_path+"""
-       - Mode:  0 => count the character numbers in a certain time
+       - Mode:  0 => count the character number in a certain time
                 1 => count the time after you finish all characters
-                2 => shot all before any flakes touch the buttom
+                2 => shoot all before any flakes touch the bottom
        - Cheat: 0 => disable the prompt by clicking the flakes
                 1 => enable the prompt by clicking the flakes
        - Speed: 1-n => flakes fall faster as the value gets bigger
-       - FontSize: 1-n => the FontSize on each flake
-       - Delay: 0 => no animation delay, shoot extremly fast
+       - FontSize: 1-n => the font size on each flake
+       - Delay: 0 => no animation delay, shoot extremely fast
                 1-n => the animation duration for shooting
-       - Flakes:1-n => the numbers of the Flakes
+       - Flakes:1-n => the number of the Flakes
     * ...: others would be matched with the flakes
 2. clicks: on-flakes, on-bullet
-     * on-flakes: show the prompt if Cheat is enable
+     * on-flakes: show the prompt if Cheat is enabled
      * on-bullet: it comes to this page, as help cmd does
 
 Copyright:
@@ -211,7 +213,8 @@ class JPTest(App, Widget):
                 return True
 
             for b in self.buttons:
-                if self.textinput.text == b.kv_key:
+                if self.textinput.text == b.kv_key or (('_') in b.kv_key and \
+                    self.textinput.text == b.kv_key.split('_')[1]):
                     if self.get_conf_delay():
                         b.bullet.background_color = b.background_color
                         b.bullet.text = self.textinput.text
@@ -231,7 +234,8 @@ class JPTest(App, Widget):
 
         if not self.textinput.focus:
             self.textinput.focus=True
-            self.textinput.text+=chr(keycode[0])
+            if keycode[0] < 256:
+                self.textinput.text+=chr(keycode[0])
             return True
 
         return True
@@ -259,10 +263,10 @@ class JPTest(App, Widget):
             if self.get_conf_char() == 2:  # important to author
                 if self.no_keys < self.get_conf_flakes():
                     for b in self.buttons:
-                            if self.get_conf_delay():
-                                b.bullet.background_color = b.background_color
-                                b.bullet.text = "♥"
-                                self.animate_bullet(b.bullet)
+                        if self.get_conf_delay():
+                            b.bullet.background_color = b.background_color
+                            b.bullet.text = "♥"
+                            self.animate_bullet(b.bullet)
                 else:
                     for b in self.buttons:
                             if b.opacity == 0:
@@ -286,23 +290,33 @@ class JPTest(App, Widget):
         self.popup.open()
         self.sounds[2].stop()
 
+    def animate_heart_bullet_x_complete(self, animation, instance): # important to author
+        self.animate_bullet(instance)
+
+    def animate_heart_bullet_x(self, instance): # important to author
+        animation =  Animation(pos=instance.pos)
+        index = (instance.button.index + 1) % 12
+        animation += Animation(pos=self.buttons[index].bullet.pos, duration=5, t="out_circ")
+        animation.bind(on_complete=self.animate_heart_bullet_x_complete)
+        animation.start(instance)
+
     def animate_heart_bullet_complete(self, animation, instance): # important to author
         if self.heart_bullet > 24:
-             self.animate_bullet(instance)
+             self.animate_heart_bullet_x(instance)
              return True
         self.heart_bullet += 1
         self.animate_heart_bullet(instance)
 
     def animate_heart_bullet(self, instance): # important to author
         pos_scale = heart_scale[instance.button.index]
-        pos = (pos_scale[0] * self.win_height/2, pos_scale[1] * self.win_height/2)
+        pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
         animation =  Animation(pos=instance.pos)
         animation += Animation(pos=pos, duration=1.5, t="out_bounce")
 
         pos_offset = heart_scale[6][0] * self.win_height
         pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
                pos_scale[1] * self.win_height)
-        animation += Animation(pos=pos, duration=1, t="out_elastic")
+        animation += Animation(pos=pos, duration=1, t="out_circ")
         animation.bind(on_complete=self.animate_heart_bullet_complete)
         animation.start(instance)
 
