@@ -52,6 +52,7 @@ size_hint=(None, None)
 flake_shape="♥" #"✿" #"♥", #"❤"
 flake_shape_v="❃" #"✿" #"♥", #"❤"
 flake_shapes=[flake_shape, flake_shape_v]
+animation_char_type="out_expo"
 
 time_limit_mode=0
 char_limit_mode=1
@@ -63,6 +64,26 @@ heart_scale=[(0,    0.7 + 0),(0.15, 0.7 + 0.18), (0.30, 0.7 + 0.15),
              (0.45, 0.7 + 0),(0.60, 0.7 + 0.15), (0.75, 0.7 + 0.18),
              (0.90, 0.7 + 0),(0.60, 0.7 - 0.40), (0.75, 0.7 - 0.20),
              (0.45, 0.7-0.6),(0.30, 0.7 - 0.40), (0.15, 0.7 - 0.20)]
+
+a_scale=[(0.1, 0.4),(0.1, 0.6),  (0.1, 0.8),
+         (0.2, 1.0),(0.3, 1.0),  (0.4, 0.8),
+         (0.4, 0.6),(0.4, 0.4),  (0.3, 0.3),
+         (0.2, 0.2),(0.45,0.3),  (0.45,0.3)]
+
+k_scale=[(0.2,0.15),(0.2, 0.3),  (0.2, 0.45),
+         (0.2, 0.6),(0.2, 0.75), (0.2, 0.9),
+         (0.5,0.15),(0.4, 0.25), (0.3, 0.35),
+         (0.3, 0.6),(0.4, 0.7),  (0.5, 0.8)]
+
+i_scale=[(0.3,0.1),  (0.3, 0.2), (0.3, 0.3),
+         (0.3,0.4),  (0.3, 0.5), (0.3, 0.6),
+         (0.3,0.7),  (0.3, 0.85),(0.15, 0.6),
+         (0.2,0.675),(0.4,0.125),(0.45, 0.2)]
+
+s_scale=[(0.1, 0.2),(0.2, 0.2),  (0.3, 0.2),
+         (0.4, 0.3),(0.45,0.4),  (0.4, 0.5),
+         (0.3, 0.6),(0.2, 0.7),  (0.15, 0.8),
+         (0.2, 0.9),(0.3, 1.0),  (0.45, 1.0)]
 
 help_info=\
 """
@@ -266,9 +287,10 @@ class JPTest(App, Widget):
         else:
             if self.get_conf_char() == 2:  # important to author
                 if self.heart_bullet >= 100 and self.heart_bullet <= 112:
-                    for b in self.buttons:
-                        if not b.opacity and self.heart_bullet == 100:
-                            return True
+                    if self.heart_bullet == 100:
+                        for b in self.buttons:
+                            if not b.opacity:
+                                return True
                     for b in self.buttons:
                         if self.get_conf_delay():
                             b.bullet.background_color = b.background_color
@@ -282,7 +304,7 @@ class JPTest(App, Widget):
                 self.heart_bullet = 1
                 for b in self.buttons:
                     b.bullet.background_color = b.background_color
-                    b.bullet.text = flake_shape
+                    b.bullet.text = flake_shape_v
                     self.animate_heart_bullet(b.bullet)
 
             return True
@@ -297,33 +319,60 @@ class JPTest(App, Widget):
         self.sounds[2].stop()
 
     def animate_heart_bullet_x_complete(self, animation, instance): # important to author
+        instance.text = flake_shape
         self.animate_bullet_x(instance)
 
-    def animate_heart_bullet_x(self, instance): # important to author
+    def animate_heart_bullet_x(self, animation, instance): # important to author
         animation =  Animation(pos=instance.pos)
         index = (instance.button.index + 1) % 12
         animation += Animation(pos=self.buttons[index].bullet.pos, duration=5, t="out_circ")
         animation.bind(on_complete=self.animate_heart_bullet_x_complete)
         animation.start(instance)
 
-    def animate_heart_bullet_complete(self, animation, instance): # important to author
-        if self.heart_bullet > 24:
-             self.animate_heart_bullet_x(instance)
-             return True
-        self.heart_bullet += 1
-        self.animate_heart_bullet(instance)
-
     def animate_heart_bullet(self, instance): # important to author
+        animation =  Animation(pos=instance.pos)
         pos_scale = heart_scale[instance.button.index]
         pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
-        animation =  Animation(pos=instance.pos)
         animation += Animation(pos=pos, duration=1.5, t="out_bounce")
 
+        pos_scale = s_scale[instance.button.index]
+        pos_offset = s_scale[4][0] * self.win_height
+        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
+               pos_scale[1] * self.win_height - self.win_height / 24)
+        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
+
+        pos_scale = tuple(i*2/3 for i in a_scale[instance.button.index])
+        pos_offset = k_scale[11][0] * self.win_height
+        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
+               pos_scale[1] * self.win_height - self.win_height / 24)
+        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
+
+        pos_scale = heart_scale[instance.button.index]
+        pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
+        animation += Animation(pos=pos, duration=1.5, t="out_bounce")
+
+        pos_scale = k_scale[instance.button.index]
+        pos_offset = k_scale[11][0] * self.win_height
+        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
+               pos_scale[1] * self.win_height - self.win_height / 24)
+        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
+
+        pos_scale = tuple(i*2/3 for i in i_scale[instance.button.index])
+        pos_offset = i_scale[11][0] * self.win_height
+        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
+               pos_scale[1] * self.win_height - self.win_height / 24)
+        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
+
+        pos_scale = heart_scale[instance.button.index]
+        pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
+        animation += Animation(pos=pos, duration=1.5, t="out_bounce")
+        pos_scale = heart_scale[instance.button.index]
         pos_offset = heart_scale[6][0] * self.win_height
+
         pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
                pos_scale[1] * self.win_height)
-        animation += Animation(pos=pos, duration=1, t="out_circ")
-        animation.bind(on_complete=self.animate_heart_bullet_complete)
+        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
+        animation.bind(on_complete=self.animate_heart_bullet_x)
         animation.start(instance)
 
     def animate_flake_duration(self):
