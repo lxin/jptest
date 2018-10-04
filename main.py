@@ -331,47 +331,36 @@ class JPTest(App, Widget):
 
     def animate_heart_bullet(self, instance): # important to author
         animation =  Animation(pos=instance.pos)
-        pos_scale = heart_scale[instance.button.index]
-        pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
-        animation += Animation(pos=pos, duration=1.5, t="out_bounce")
+        pos_scale = tuple(i*2/3 for i in s_scale[instance.button.index])
+        pos = (pos_scale[0] * self.win_height,
+               pos_scale[1] * self.win_height - self.win_height / 24 + self.win_height/5)
+        animation += Animation(pos=pos, duration=2, t=animation_char_type)
 
-        pos_scale = s_scale[instance.button.index]
-        pos_offset = s_scale[4][0] * self.win_height
-        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
-               pos_scale[1] * self.win_height - self.win_height / 24)
+        pos_scale = tuple(i/2 for i in a_scale[instance.button.index])
+        pos = (pos_scale[0] * self.win_height + self.win_width/4,
+               pos_scale[1] * self.win_height - self.win_height / 24 + self.win_height/5)
         animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
 
-        pos_scale = tuple(i*2/3 for i in a_scale[instance.button.index])
-        pos_offset = k_scale[11][0] * self.win_height
-        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
-               pos_scale[1] * self.win_height - self.win_height / 24)
+        pos_scale = tuple(i*2/3 for i in k_scale[instance.button.index])
+        pos = (pos_scale[0] * self.win_height + self.win_width*2/4,
+               pos_scale[1] * self.win_height - self.win_height / 24 + self.win_height/5)
         animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
 
-        pos_scale = heart_scale[instance.button.index]
-        pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
-        animation += Animation(pos=pos, duration=1.5, t="out_bounce")
-
-        pos_scale = k_scale[instance.button.index]
-        pos_offset = k_scale[11][0] * self.win_height
-        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
-               pos_scale[1] * self.win_height - self.win_height / 24)
-        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
-
-        pos_scale = tuple(i*2/3 for i in i_scale[instance.button.index])
-        pos_offset = i_scale[11][0] * self.win_height
-        pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
-               pos_scale[1] * self.win_height - self.win_height / 24)
+        pos_scale = tuple(i/2 for i in i_scale[instance.button.index])
+        pos = (pos_scale[0] * self.win_height + self.win_width*3/4,
+               pos_scale[1] * self.win_height - self.win_height / 24 + self.win_height/5)
         animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
 
         pos_scale = heart_scale[instance.button.index]
-        pos = (pos_scale[0] * self.win_height*2/5, pos_scale[1] * self.win_height *2/5)
-        animation += Animation(pos=pos, duration=1.5, t="out_bounce")
+        pos = (pos_scale[0] * self.win_height*2/5,
+               pos_scale[1] * self.win_height *2/5 + self.win_height/5)
+        animation += Animation(pos=pos, duration=2, t="out_bounce")
+
         pos_scale = heart_scale[instance.button.index]
         pos_offset = heart_scale[6][0] * self.win_height
-
         pos = (pos_scale[0] * self.win_height + (self.win_width - pos_offset - self.win_height / 24),
                pos_scale[1] * self.win_height)
-        animation += Animation(pos=pos, duration=1.5, t=animation_char_type)
+        animation += Animation(pos=pos, duration=2, t=animation_char_type)
         animation.bind(on_complete=self.animate_heart_bullet_x)
         animation.start(instance)
 
