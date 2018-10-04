@@ -46,9 +46,12 @@ extmap_path=os.getenv("HOME")+'/jp_ext.map'
 font_name='sources/DroidSansFallback'
 help_font='sources/CourierNew'
 flake_colors=((0.1,1,1,.7), (1,0.1,1,.7), (1,1,0.1,.7),
-(0.5,1,0.5,.7), (0.5,0.5,1,.8), (1,0.5,0.5,.7))
+(0.5,1,0.5,.7), (0.5,0.5,1,.7), (1,0.5,0.5,.7))
 bullet_color=(0,0,0,0)
 size_hint=(None, None)
+flake_shape="♥" #"✿" #"♥", #"❤"
+flake_shape_v="❃" #"✿" #"♥", #"❤"
+flake_shapes=[flake_shape, flake_shape_v]
 
 time_limit_mode=0
 char_limit_mode=1
@@ -178,7 +181,7 @@ class JPTest(App, Widget):
             else:
                 newmap = jp_maps[self.get_conf_char()]
         except:
-            newmap = jp_maps[0]
+            newmap = {}
         self.jp_map=copy.deepcopy(newmap)
 
         self.no_keys=0
@@ -265,7 +268,7 @@ class JPTest(App, Widget):
                     for b in self.buttons:
                         if self.get_conf_delay():
                             b.bullet.background_color = b.background_color
-                            b.bullet.text = "♥"
+                            b.bullet.text = flake_shape
                             self.animate_bullet(b.bullet)
                 else:
                     for b in self.buttons:
@@ -276,7 +279,7 @@ class JPTest(App, Widget):
                     self.heart_bullet = 1
                     for b in self.buttons:
                         b.bullet.background_color = b.background_color
-                        b.bullet.text = "♥"
+                        b.bullet.text = flake_shape
                         self.animate_heart_bullet(b.bullet)
 
             return True
@@ -405,11 +408,11 @@ class JPTest(App, Widget):
         keys=list(self.jp_map.keys())
         if not keys:
             if self.get_conf_char() == 2:  # important to author
-                value = "❤"
+                value = flake_shape
                 key=random.choice([":D", ";)", ":P", "O.o", "\o/", "^0^", ">\"<", ":)", "<3"])
             else:
-                value = "DONE"
-                key= "NULL"
+                value = flake_shapes[self.get_conf_char()%2]
+                key = flake_shapes[(self.get_conf_char() + 1)%2]
             self.no_keys += 1
             button.text = value
             button.kv_key = key
