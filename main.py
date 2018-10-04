@@ -141,10 +141,11 @@ class JPTest(App, Widget):
             if len(newconfs) != len(self.confs):
                 instance.setup_input.text = self.get_conf_all()
                 return
-
-        self.confs=newconfs
-        pickle.dump(self.confs, open(conf_path,'wb'))
-        self.reset_stats(instance)
+        try:
+            self.confs=newconfs
+            pickle.dump(self.confs, open(conf_path,'wb'))
+        finally:
+            self.reset_stats(instance)
 
     def reset_widgets(self, instance = None):
         self.win_width  = Window.size[0]
@@ -264,23 +265,25 @@ class JPTest(App, Widget):
             self.set_stat_ctime(time_gap)
         else:
             if self.get_conf_char() == 2:  # important to author
-                if self.no_keys < self.get_conf_flakes():
+                if self.heart_bullet >= 100 and self.heart_bullet <= 112:
+                    for b in self.buttons:
+                        if not b.opacity and self.heart_bullet == 100:
+                            return True
                     for b in self.buttons:
                         if self.get_conf_delay():
                             b.bullet.background_color = b.background_color
                             b.bullet.text = flake_shape
                             self.animate_bullet(b.bullet)
-                else:
-                    for b in self.buttons:
-                            if b.opacity == 0:
-                                return True
-                    if self.heart_bullet or self.get_conf_flakes() != 12:
-                        return True
-                    self.heart_bullet = 1
-                    for b in self.buttons:
-                        b.bullet.background_color = b.background_color
-                        b.bullet.text = flake_shape
-                        self.animate_heart_bullet(b.bullet)
+                    self.heart_bullet += 1
+
+                if self.heart_bullet or self.get_conf_flakes() != 12:
+                    return True
+
+                self.heart_bullet = 1
+                for b in self.buttons:
+                    b.bullet.background_color = b.background_color
+                    b.bullet.text = flake_shape
+                    self.animate_heart_bullet(b.bullet)
 
             return True
 
@@ -294,7 +297,7 @@ class JPTest(App, Widget):
         self.sounds[2].stop()
 
     def animate_heart_bullet_x_complete(self, animation, instance): # important to author
-        self.animate_bullet(instance)
+        self.animate_bullet_x(instance)
 
     def animate_heart_bullet_x(self, instance): # important to author
         animation =  Animation(pos=instance.pos)
@@ -345,6 +348,26 @@ class JPTest(App, Widget):
                       self.win_height / 24)
         instance.text=""
         self.sounds[0].play()
+
+    def animate_bullet_xx_complete(self, animation, instance): # important to author
+        self.heart_bullet = 100
+        instance.background_color=bullet_color
+        instance.text=""
+
+    def animate_bullet_x_complete(self, animation, instance): # important to author
+        instance.button.opacity = 0
+        self.sounds[0].play()
+        animation =  Animation(pos=instance.pos)
+        pos=(self.win_width / 2 - self.win_width / 80, self.win_height / 24)
+        animation += Animation(pos=pos, duration=1.5, t="in_circ")
+        animation.bind(on_complete=self.animate_bullet_xx_complete)
+        animation.start(instance)
+
+    def animate_bullet_x(self, instance): # important to author
+        animation =  Animation(pos=instance.pos)
+        animation += Animation(pos=instance.button.pos, duration=1, t="in_circ")
+        animation.bind(on_complete=self.animate_bullet_x_complete)
+        animation.start(instance)
 
     def animate_bullet(self, instance):
         animation =  Animation(pos=instance.pos)
