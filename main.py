@@ -75,10 +75,10 @@ k_scale=[(0.2,0.15),(0.2, 0.3),  (0.2, 0.45),
          (0.5,0.15),(0.4, 0.25), (0.3, 0.35),
          (0.3, 0.6),(0.4, 0.7),  (0.5, 0.8)]
 
-i_scale=[(0.3,0.15),  (0.3, 0.25), (0.3, 0.35),
-         (0.3,0.45),  (0.3, 0.55), (0.3, 0.65),
-         (0.3,0.75),  (0.3, 0.90),(0.15, 0.65),
-         (0.2,0.725),(0.4,0.175),(0.45, 0.25)]
+i_scale=[(0.3,0.2),  (0.3, 0.3), (0.3, 0.4),
+         (0.3,0.5),  (0.3, 0.6), (0.3, 0.7),
+         (0.3,0.8),  (0.3, 0.95),(0.15, 0.7),
+         (0.2,0.775),(0.4,0.225),(0.45, 0.3)]
 
 s_scale=[(0.1, 0.1),(0.2, 0.1),  (0.3, 0.1),
          (0.4, 0.2),(0.45,0.3),  (0.4, 0.4),
@@ -108,6 +108,7 @@ Help:
                 1-n => the animation duration for shooting
        - Flakes:1-n => the number of the Flakes
     * ...: others would be matched with the flakes
+
 2. clicks: on-flakes, on-bullet
      * on-flakes: show the prompt if Cheat is enabled
      * on-bullet: it comes to this page, as help cmd does
