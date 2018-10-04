@@ -52,7 +52,7 @@ size_hint=(None, None)
 flake_shape="♥" #"✿" #"♥", #"❤"
 flake_shape_v="❃" #"✿" #"♥", #"❤"
 flake_shapes=[flake_shape, flake_shape_v]
-animation_char_type="out_expo"
+animation_char_type="in_out_quart"
 
 time_limit_mode=0
 char_limit_mode=1
@@ -388,6 +388,9 @@ class JPTest(App, Widget):
         self.sounds[0].play()
 
     def animate_bullet_xx_complete(self, animation, instance): # important to author
+        if instance.button not in self.buttons:
+            return True
+
         self.heart_bullet = 100
         instance.background_color=bullet_color
         instance.text=""
