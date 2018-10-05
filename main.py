@@ -239,8 +239,8 @@ class JPTest(App, Widget):
                 return True
 
             for b in self.buttons:
-                if self.textinput.text == b.kv_key or (('_') in b.kv_key and \
-                    self.textinput.text == b.kv_key.split('_')[1]):
+                if (self.textinput.text == b.kv_key or (('_') in b.kv_key and \
+                    self.textinput.text == b.kv_key.split('_')[1])) and b.opacity:
                     if self.get_conf_delay():
                         b.bullet.background_color = b.background_color
                         b.bullet.text = self.textinput.text
